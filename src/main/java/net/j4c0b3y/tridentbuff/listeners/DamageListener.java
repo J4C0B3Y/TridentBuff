@@ -14,12 +14,8 @@ public class DamageListener implements Listener {
         Trident trident = event.getDamager().getType().equals(EntityType.TRIDENT) ? (Trident) event.getDamager() : null;
         if (trident == null) return;
 
-        event.getEntity().sendMessage(String.valueOf(event.getDamage()));
-
         int level = trident.getItem().getEnchantmentLevel(Enchantment.DAMAGE_ALL);
         double damage = event.getDamage() + (0.5 * (level - 1) + 1);
         if (level != 0) event.setDamage(damage);
-
-        event.getEntity().sendMessage(String.valueOf(event.getDamage()));
     }
 }
