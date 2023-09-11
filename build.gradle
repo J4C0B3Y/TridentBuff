@@ -10,7 +10,7 @@ var name = "TridentBuff"
 
 description = "A plugin made for CloudyDreamzs"
 group = "net.j4c0b3y"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
