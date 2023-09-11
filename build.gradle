@@ -1,0 +1,60 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id("java")
+    id("io.freefair.lombok") version "6.0.0-m2"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
+}
+
+var name = "TridentBuff"
+
+description = "A plugin made for CloudyDreamzs"
+group = "net.j4c0b3y"
+version = "1.0.0"
+
+repositories {
+    mavenCentral()
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+}
+
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT"
+}
+
+compileJava {
+    options.compilerArgs.add "-XDignore.symbol.file"
+    options.compilerArgs.add "-Werror"
+    options.fork = true
+    options.forkOptions.executable = "javac"
+}
+
+processResources {
+    filter ReplaceTokens, tokens: [
+            "version": version,
+            "name": name,
+            "description": description,
+    ]
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+def outputTasks() {
+    ["shadowJar"].stream().map({tasks.findByPath(it)})
+}
+
+tasks.register('copyJars', Copy) {
+    outputTasks().forEach({from(it)})
+    rename "(.*)-all.jar", (name + "-" + version + ".jar")
+    into file("jars")
+}
+
+tasks.register('cleanJars') {
+    delete file("jars")
+}
+
+clean.dependsOn "cleanJars"
+build.dependsOn "shadowJar"
+build.dependsOn "copyJars"
